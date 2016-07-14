@@ -3,6 +3,10 @@
 // Dependencies
 var express = require('express');
 var mongoose = require('mongoose');
+var passport = require('passport');
+
+// Passport middelware
+require('./app/config/passport')(passport);
 
 // Configuration
 var config = require('./app/config/config');
