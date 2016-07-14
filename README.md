@@ -107,11 +107,9 @@ Server: `index.js`
 
 `Dependencies`:
 ```javascript
-var mongoose = require( 'mongoose' );
-var crypto = require('crypto');
-var jwt = require('jsonwebtoken');
+var express = require('express');
+var mongoose = require('mongoose');
 var passport = require('passport');
-var config = require('../config/config');
 ```
 
 `Passport middelware`:
