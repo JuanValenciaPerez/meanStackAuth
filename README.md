@@ -6,7 +6,7 @@
 
 First we have to define our User model with all its properties and methods.
 
-User Schema: `app/models/user.js`
+#### User Schema: `app/models/user.js`
 
 `Dependencies`:
 ```javascript
@@ -129,7 +129,7 @@ First we have to define the controller functions for our authentication endpoint
 `Dependencies`:
 ```javascript
 var passport = require('passport');
-var User = ('../models/user');
+var User = require('../models/user');
 ```
 
 `Helper Function`:
@@ -216,7 +216,7 @@ Next we have to define the profile controller for our secure `/api/profile` API 
 
 `Dependencies`:
 ```javascript
-var User = ('../models/user');
+var User = require('../models/user');
 ```
 
 `Read`:
@@ -253,7 +253,7 @@ $ npm install express-jwt --save
 
 Then we need to require it and configure it in our secure routes.
 
-Routes: `app/routes/api.js`
+#### Routes: `app/routes/api.js`
 
 `Dependencies`:
 ```javascript
@@ -293,7 +293,7 @@ module.exports = router;
 
 `Passport` should be initialised as Express middleware just before the API routes are added, as these routes are the first time that `Passport` will be used.
 
-Server: `index.js`
+#### Server: `index.js`
 
 `Middelware`:
 ```javascript

@@ -1,7 +1,7 @@
 'use strict';
 
 // Dependencies
-var User = ('../models/user');
+var User = require('../models/user');
 
 function read(req, res) {
   if (!req.payload._id) {

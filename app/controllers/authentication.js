@@ -2,7 +2,7 @@
 
 // Dependencies
 var passport = require('passport');
-var User = ('../models/user');
+var User = require('../models/user');
 
 function sendJSONresponse(res, status, content) {
   res.status(status);
