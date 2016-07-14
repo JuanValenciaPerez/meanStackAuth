@@ -68,7 +68,7 @@ $ npm install passport passport-local --save
 
 Next we have to configure `Passport`. The strategy definition will look like this:
 
-Strategy: `app/config/passport.js`
+#### Strategy: `app/config/passport.js`
 
 `Dependencies`:
 ```javascript
@@ -107,7 +107,7 @@ module.exports = function(passport) {
 
 Now `Passport` just needs to be added to the application. So in `index.js` we need to require the `Passport` module, require and invoke `passport.js` as middleware.
 
-Server: `index.js`
+#### Server: `index.js`
 
 `Dependencies`:
 ```javascript
@@ -122,9 +122,9 @@ require('./app/config/passport')(passport);
 ```
 ### 1.3 Configure API Controllers
 
-First we have to define the controller functions for our authentication endpoints. The `/api/register` and `/api/login` endpoints are none secure routes!
+First we have to define the controller functions for our authentication endpoints. The `/api/register` and `/api/login` endpoints are non secure routes!
 
-Authentication Controller: `app/controllers/authentication.js`
+#### Authentication Controller: `app/controllers/authentication.js`
 
 `Dependencies`:
 ```javascript
@@ -212,7 +212,7 @@ module.exports = {
 
 Next we have to define the profile controller for our secure `/api/profile` API route.
 
-Profile Controller: `app/controllers/profile.js`
+#### Profile Controller: `app/controllers/profile.js`
 
 `Dependencies`:
 ```javascript
@@ -241,4 +241,63 @@ function read(req, res) {
 module.exports = {
   read: read
 };
+```
+
+### 1.4 Configure API Routes
+
+We have to make sure that only authenticated users can access the `/api/profile` route. The way to validate a request is to ensure that the JWT sent with it is genuine, by using the secret again. To validate the JWT we need to install the following molule:
+
+```
+$ npm install express-jwt --save
+```
+
+Then we need to require it and configure it in our secure routes.
+
+Routes: `app/routes/api.js`
+
+`Dependencies`:
+```javascript
+var express = require('express');
+var router = express.Router();
+var jwt = require('express-jwt');
+var config = require('../config/config');
+```
+
+`Middelware`:
+```javascript
+var auth = jwt({
+  secret: config.jwt.secret,
+  userProperty: 'payload'
+});
+```
+
+`Controller`:
+```javascript
+var profileCtrl = require('../controllers/profile');
+var authCtrl = require('../controllers/authentication');
+```
+
+`Routes`:
+```javascript
+router.get('/profile', auth, profileCtrl.read);
+router.post('/register', authCtrl.register);
+router.post('/login', authCtrl.login);
+```
+
+`Export`:
+```javascript
+module.exports = router;
+```
+
+**The placement of all of these items inside `index.js` is quite important, as they need fit into a certain sequence.**
+
+`Passport` should be initialised as Express middleware just before the API routes are added, as these routes are the first time that `Passport` will be used.
+
+Server: `index.js`
+
+`Middelware`:
+```javascript
+require('./app/middelware/app.middelware')(app);
+app.use(passport.initialize());
+app.use('/api', routesApi);
 ```

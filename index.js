@@ -11,16 +11,16 @@ require('./app/config/passport')(passport);
 // Configuration
 var config = require('./app/config/config');
 
+// Routes
+var routesApi = require('./app/routes/api');
+
 // Express
 var app = express();
 
 // Middelware
 require('./app/middelware/app.middelware')(app);
-
-// Routes
-app.get('/', function(req, res) {
-  res.send('Hello World');
-});
+app.use(passport.initialize());
+app.use('/api', routesApi);
 
 // Connection to database
 mongoose.connect(config.db.uri, function(err) {
