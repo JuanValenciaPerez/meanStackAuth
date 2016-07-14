@@ -4,6 +4,8 @@
 
 ### 1.1 Creating the MongoDB Data Schema with Mongoose
 
+First we have to define our User model with all its properties and methods.
+
 User Schema: `app/models/user.js`
 
 `Dependencies`:
@@ -60,7 +62,9 @@ userSchema.methods.generateJwt = function() {
 
 First we have to install `passport` and `passport-local` locally.
 
-`$ npm install passport passport-local --save`
+```
+$ npm install passport passport-local --save
+```
 
 Next we have to configure `Passport`. The strategy definition will look like this:
 
@@ -115,4 +119,126 @@ var passport = require('passport');
 `Passport middelware`:
 ```javascript
 require('./app/config/passport')(passport);
+```
+### 1.3 Configure API Controllers
+
+First we have to define the controller functions for our authentication endpoints. The `/api/register` and `/api/login` endpoints are none secure routes!
+
+Authentication Controller: `app/controllers/authentication.js`
+
+`Dependencies`:
+```javascript
+var passport = require('passport');
+var User = ('../models/user');
+```
+
+`Helper Function`:
+```javascript
+function sendJSONresponse(res, status, content) {
+  res.status(status);
+  res.json(content);
+}
+```
+
+`Register`:
+```javascript
+function register(req, res) {
+  if(!req.body.name || !req.body.email || !req.body.password) {
+    sendJSONresponse(res, 400, {
+      "message": "All fields required"
+    });
+    return;
+  }
+
+  var user = new User();
+
+  user.name = req.body.name;
+  user.email = req.body.email;
+
+  user.setPassword(req.body.password);
+
+  user.save(function(err) {
+    var token;
+    token = user.generateJwt();
+    res.status(200);
+    res.json({
+      "token" : token
+    });
+  });
+}
+```
+
+`Login`:
+```javascript
+function login(req, res) {
+  if(!req.body.email || !req.body.password) {
+    sendJSONresponse(res, 400, {
+      "message": "All fields required"
+    });
+    return;
+  }
+
+  passport.authenticate('local', function(err, user, info){
+    var token;
+
+    // If Passport throws/catches an error
+    if (err) {
+      res.status(404).json(err);
+      return;
+    }
+
+    // If a user is found
+    if(user){
+      token = user.generateJwt();
+      res.status(200);
+      res.json({
+        "token" : token
+      });
+    } else {
+      // If user is not found
+      res.status(401).json(info);
+    }
+  })(req, res);
+}
+```
+
+`Export`:
+```javascript
+module.exports = {
+  register: register,
+  login: login
+};
+```
+
+Next we have to define the profile controller for our secure `/api/profile` API route.
+
+Profile Controller: `app/controllers/profile.js`
+
+`Dependencies`:
+```javascript
+var User = ('../models/user');
+```
+
+`Read`:
+```javascript
+function read(req, res) {
+  if (!req.payload._id) {
+    res.status(401).json({
+      "message" : "UnauthorizedError: private profile"
+    });
+  } else {
+    User
+      .findById(req.payload._id)
+      .exec(function(err, user) {
+        res.status(200).json(user);
+      });
+  }
+}
+```
+
+`Export`:
+```javascript
+module.exports = {
+  read: read
+};
 ```
