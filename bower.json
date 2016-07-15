@@ -1,0 +1,15 @@
+{
+  "name": "mean-stack-auth",
+  "description": "Tutorial for authentication using the MEAN stack",
+  "main": "index.js",
+  "authors": [
+    "Philipp Schulte"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "authentication",
+    "passport",
+    "jwt"
+  ],
+  "homepage": "https://github.com/philippschulte/meanStackAuth"
+}
