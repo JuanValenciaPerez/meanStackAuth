@@ -58,6 +58,11 @@ userSchema.methods.generateJwt = function() {
 };
 ```
 
+`Export`:
+```javascript
+module.exports = mongoose.model('User', userSchema);
+```
+
 ### 1.2 Setup Passport to Handle the Express Authentication
 
 First we have to install `passport` and `passport-local` locally.
@@ -288,6 +293,7 @@ router.post('/login', authCtrl.login);
 ```javascript
 module.exports = router;
 ```
+**Important: To secure an API Route we just have to add the `auth` middelware to the route!**
 
 **The placement of all of these items inside `index.js` is quite important, as they need fit into a certain sequence.**
 
