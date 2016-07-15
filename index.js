@@ -18,9 +18,10 @@ var routesApi = require('./app/routes/api');
 var app = express();
 
 // Middelware
-require('./app/middelware/app.middelware')(app);
+require('./app/middelware/main')(app);
 app.use(passport.initialize());
 app.use('/api', routesApi);
+require('./app/middelware/error')(app);
 
 // Connection to database
 mongoose.connect(config.db.uri, function(err) {

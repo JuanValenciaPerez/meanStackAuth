@@ -303,7 +303,31 @@ module.exports = router;
 
 `Middelware`:
 ```javascript
-require('./app/middelware/app.middelware')(app);
+require('./app/middelware/main')(app);
 app.use(passport.initialize());
 app.use('/api', routesApi);
+```
+
+### 1.5 Configure Error handling
+
+To make sure our API plays nicely, we should catch common errors and return a proper response by creating some custom middelware.
+
+#### Server: `app/middelware/error.js`
+
+`Middelware`:
+```javascript
+module.exports = function(app) {
+  // Handle 404
+  app.use(function(req, res, next) {
+    var err = new Error('Not Found');
+    err.status = 404;
+    next(err);
+  });
+
+  // Handle 500 and every other status
+  app.use(function(err, req, res, next) {
+    res.status(err.status || 500);
+    res.json({"message": err.name + ": " + err.message});
+  });
+};
 ```
