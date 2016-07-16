@@ -20,7 +20,7 @@
           <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ navvm.currentUser.name }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="/#/profile">Profile</a></li>
-            <li><a href="/api/user/logout">Logout</a></li>
+            <li ng-click="navvm.logout()"><a href="/#/">Logout</a></li>
           </ul>
         </li>
       </ul>
