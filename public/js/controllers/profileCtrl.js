@@ -4,8 +4,19 @@
     .module('meanApp')
     .controller('profileCtrl', profileCtrl);
 
-    function profileCtrl () {
-      console.log('Profile controller is running');
-    }
+  profileCtrl.$inject = ['$location', 'profile'];
+  function profileCtrl($location, profile) {
+    var vm = this;
+
+    vm.user = {};
+
+    profile.getProfile()
+      .success(function(data) {
+        vm.user = data;
+      })
+      .error(function(e) {
+        console.log(e);
+      });
+  }
 
 })();
